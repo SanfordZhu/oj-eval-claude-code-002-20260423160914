@@ -119,7 +119,7 @@ void int2048::mul_fft(const int2048 &other) {
 
 // Binary shift for division
 void int2048::shift_left(int k) {
-  if (digits.empty()) return;
+  if (k <= 0) return;
   digits.insert(digits.begin(), k, 0);
 }
 
@@ -176,7 +176,9 @@ void int2048::div_mod(const int2048 &divisor, int2048 &quotient, int2048 &remain
 }
 
 // Constructors
-int2048::int2048() : sign(true), digits(1, 0) {}
+int2048::int2048() : sign(true), digits(1, 0) {
+  clean();
+}
 
 int2048::int2048(long long x) {
   if (x < 0) {
@@ -193,6 +195,7 @@ int2048::int2048(long long x) {
       x /= BASE;
     }
   }
+  clean();
 }
 
 int2048::int2048(const std::string &s) {
