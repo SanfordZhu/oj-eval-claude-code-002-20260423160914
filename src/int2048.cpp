@@ -138,17 +138,22 @@ void int2048::div_mod(const int2048 &divisor, int2048 &quotient, int2048 &remain
   quotient = int2048(0);
   remainder = int2048(0);
 
+  // Pre-compute divisor * 100 for faster search
+  int2048 divisor100 = divisor;
+  divisor100.sign = true;
+  divisor100 = divisor100 * int2048(100);
+
   for (int i = (int)digits.size() - 1; i >= 0; --i) {
     remainder.shift_left(1);
     remainder.digits[0] = digits[i];
     remainder.clean();
 
-    // Binary search for quotient digit
-    int low = 0, high = BASE - 1;
+    // Two-level binary search for quotient digit
+    // First level: find hundreds digit
+    int low = 0, high = BASE / 100 - 1;
     while (low <= high) {
       int mid = (low + high) / 2;
-      int2048 temp = divisor;
-      temp.sign = true;
+      int2048 temp = divisor100;
       int2048 product = int2048((long long)mid);
       product *= temp;
 
@@ -158,15 +163,34 @@ void int2048::div_mod(const int2048 &divisor, int2048 &quotient, int2048 &remain
         high = mid - 1;
       }
     }
+    int hundreds = high;
 
-    // Append quotient digit at the beginning (most significant)
-    quotient.digits.insert(quotient.digits.begin(), high);
-    quotient.clean();
-
-    if (high > 0) {
+    // Second level: find units digit
+    low = 0;
+    high = 99;
+    while (low <= high) {
+      int mid = (low + high) / 2;
       int2048 temp = divisor;
       temp.sign = true;
-      int2048 product = int2048((long long)high);
+      int2048 product = int2048((long long)(hundreds * 100 + mid));
+      product *= temp;
+
+      if (product.compare_abs(remainder) <= 0) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+    int qdigit = hundreds * 100 + high;
+
+    // Append quotient digit at the beginning (most significant)
+    quotient.digits.insert(quotient.digits.begin(), qdigit);
+    quotient.clean();
+
+    if (qdigit > 0) {
+      int2048 temp = divisor;
+      temp.sign = true;
+      int2048 product = int2048((long long)qdigit);
       product *= temp;
       remainder.sub_abs(product);
     }
