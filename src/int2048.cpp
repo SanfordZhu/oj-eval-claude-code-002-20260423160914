@@ -5,8 +5,8 @@
 namespace sjtu {
 
 // Constants for digit compression
-const int BASE = 1000000;  // 10^6
-const int BASE_DIGITS = 6;
+const int BASE = 100000000;  // 10^8
+const int BASE_DIGITS = 8;
 
 // Helper functions
 void int2048::clean() {
