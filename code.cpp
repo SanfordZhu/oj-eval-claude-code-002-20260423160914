@@ -100,8 +100,8 @@ public:
 };
 
 // Constants for digit compression
-const int BASE = 1000000;  // 10^6
-const int BASE_DIGITS = 6;
+const int BASE = 10000;  // 10^4
+const int BASE_DIGITS = 4;
 
 // Helper functions
 void int2048::clean() {
