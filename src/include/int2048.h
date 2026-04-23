@@ -19,7 +19,21 @@
 
 namespace sjtu {
 class int2048 {
-  // todo
+  // Data members
+  bool sign;  // true for positive, false for negative
+  std::vector<int> digits;  // digits[0] is least significant
+
+  // Helper functions
+  void clean();
+  int compare_abs(const int2048 &other) const;
+  void add_abs(const int2048 &other);
+  void sub_abs(const int2048 &other);
+  void mul_fft(const int2048 &other);
+  void shift_left(int k);
+  void shift_right(int k);
+  void div_mod(const int2048 &divisor, int2048 &quotient, int2048 &remainder) const;
+  void fft(std::vector<std::complex<double>> &a, bool invert);
+
 public:
   // Constructors
   int2048();
